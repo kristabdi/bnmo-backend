@@ -17,6 +17,13 @@ func UserGetByUsername(username string) (models.User, error) {
 	return user, result.Error
 }
 
+func UserGetById(id uint) (models.User, error) {
+	user := models.User{}
+
+	result := utils.Db.Where("id = ?", id).First(&user)
+	return user, result.Error
+}
+
 func UserGetAll() ([]models.User, error) {
 	var users []models.User
 
