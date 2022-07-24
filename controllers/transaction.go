@@ -13,6 +13,11 @@ func TransactionGetBatch(page int64, pageSize int64, id uint) ([]models.Transact
 		return nil, result.Error
 	}
 
+	for i := 0; i < len(transactions); i++ {
+		transactions[i].NameFrom = transactions[i].UserFrom.Name
+		transactions[i].NameTo = transactions[i].UserTo.Name
+	}
+
 	return transactions, nil
 }
 
