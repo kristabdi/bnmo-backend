@@ -19,7 +19,7 @@ import (
 )
 
 func Login(c echo.Context) error {
-	var user models.User
+	user := new(models.User)
 	var err error
 
 	if err = c.Bind(user); err != nil {
@@ -39,10 +39,8 @@ func Login(c echo.Context) error {
 	expiry := time.Now().Add(time.Hour * 24)
 
 	claims := utils.CustomClaims{
-		Username:   dbUser.Username,
-		Name:       dbUser.Name,
-		IsAdmin:    dbUser.IsAdmin,
-		IsVerified: dbUser.IsVerified,
+		Username: dbUser.Username,
+		IsAdmin:  dbUser.IsAdmin,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiry.Unix(),
 		},
@@ -54,13 +52,13 @@ func Login(c echo.Context) error {
 		return err
 	}
 
-	var cookie *http.Cookie
+	cookie := new(http.Cookie)
 	cookie.Name = "access_token"
 	cookie.Value = tokenSigned
 	cookie.Expires = expiry
 	c.SetCookie(cookie)
 
-	return c.NoContent(http.StatusOK)
+	return c.JSON(http.StatusOK, models.User{Username: dbUser.Username, Name: dbUser.Name, IsAdmin: dbUser.IsAdmin})
 }
 
 func Registration(c echo.Context) error {

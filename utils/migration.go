@@ -20,10 +20,31 @@ func (Db *DbInstance) InitSeeding() error {
 			return err
 		}
 
+		var hashed []byte
+		hashed, err = bcrypt.GenerateFromPassword([]byte("admin"), 14)
+		if err != nil {
+			return err
+		}
+
+		admin := models.User{
+			Default:    models.Default{},
+			Username:   "admin",
+			Name:       "admin",
+			Password:   string(hashed),
+			IsVerified: true,
+			IsAdmin:    true,
+			Balance:    0,
+			Photo:      "",
+		}
+		result := Db.Create(&admin)
+		if result.Error != nil {
+			return err
+		}
+
 		for i := 0; i < 50; i++ {
 			newUser := models.User{}
 			err = faker.FakeData(&newUser)
-			var hashed []byte
+
 			hashed, err = bcrypt.GenerateFromPassword([]byte(faker.Sentence()), 14)
 			if err != nil {
 				return err
@@ -35,7 +56,6 @@ func (Db *DbInstance) InitSeeding() error {
 			if result.Error != nil {
 				return err
 			}
-
 		}
 	}
 

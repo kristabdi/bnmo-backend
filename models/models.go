@@ -6,16 +6,16 @@ import (
 )
 
 type Default struct {
-	ID        uint `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uint      `json:"id,omitempty" faker:"-" gorm:"primaryKey"`
+	CreatedAt time.Time `json:"created_at,omitempty" faker:"-"`
+	UpdatedAt time.Time `json:"updated_at,omitempty" faker:"-"`
 }
 
 type User struct {
-	Default    `faker:"-"`
+	Default
 	Username   string `json:"username" faker:"username,unique" gorm:"unique"`
 	Name       string `json:"name,omitempty" faker:"name,unique"`
-	Password   string `json:"password" faker:"-"`
+	Password   string `json:"password,omitempty" faker:"-"`
 	IsVerified bool   `json:"is_verified,omitempty" faker:"-" gorm:"default:false"`
 	IsAdmin    bool   `json:"is_admin,omitempty" faker:"-" gorm:"default:false"`
 	Balance    uint64 `json:"balance,omitempty" faker:"-" gorm:"default:0"`
@@ -39,9 +39,10 @@ type Request struct {
 	ID         uuid.UUID `json:"id" gorm:"type:uuid;default:uuid_generate_v4()"`
 	UserID     int64     `json:"id_user"`
 	Amount     uint64    `json:"amount"`
-	IsAdd      bool      `json:"isAdd"`
+	Currency   string    `json:"currency"`
+	IsAdd      bool      `json:"is_add"`
 	IsApproved bool      `json:"is_approved" gorm:"default:false"`
-	CreatedAt  time.Time `json:"-"`
-	UpdatedAt  time.Time `json:"-"`
+	CreatedAt  time.Time `json:"created_at,omitempty"`
+	UpdatedAt  time.Time `json:"updated_at,omitempty"`
 	User       User      `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
