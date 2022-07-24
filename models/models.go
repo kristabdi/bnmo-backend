@@ -22,8 +22,10 @@ type User struct {
 	Photo      string `json:"photo,omitempty" faker:"-" gorm:"default:''"`
 }
 
-func (u *User) NoPass() {
+func (u *User) NoSensitive() {
+	u.ID = 0
 	u.Password = ""
+
 }
 
 type Transaction struct {

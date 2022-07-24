@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/kristabdi/bnmo-backend/handlers"
 	"github.com/kristabdi/bnmo-backend/utils"
+	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/labstack/echo/v4"
 )
@@ -28,6 +29,12 @@ func main() {
 	}
 
 	e := echo.New()
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderAuthorization},
+		AllowCredentials: true,
+	}))
+
 	auth := e.Group("/auth")
 	auth.POST("/register", handlers.Registration)
 	auth.POST("/login", handlers.Login)
