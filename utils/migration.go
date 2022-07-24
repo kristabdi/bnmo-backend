@@ -39,7 +39,7 @@ func (Db *DbInstance) InitSeeding() error {
 		}
 	}
 
-	log.Println("User table seeding done!")
+	log.Println("User table done!")
 
 	if !Db.Migrator().HasTable(&models.Request{}) {
 		err := Db.Migrator().CreateTable(&models.Request{})
@@ -62,7 +62,7 @@ func (Db *DbInstance) InitSeeding() error {
 		}
 	}
 
-	log.Println("Request table seeding done!")
+	log.Println("Request table done!")
 
 	if !Db.Migrator().HasTable(&models.Transaction{}) {
 		err := Db.Migrator().CreateTable(&models.Transaction{})
@@ -95,7 +95,7 @@ func (Db *DbInstance) InitSeeding() error {
 		}
 	}
 
-	log.Println("Transaction table seeding done!")
+	log.Println("Transaction table done!")
 
 	faker.SetGenerateUniqueValues(false)
 	return nil

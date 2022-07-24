@@ -13,13 +13,13 @@ type Default struct {
 
 type User struct {
 	Default    `faker:"-"`
-	Email      string `json:"email" faker:"email,unique" gorm:"unique"`
-	Name       string `json:"name" faker:"name,unique"`
+	Username   string `json:"username" faker:"username,unique" gorm:"unique"`
+	Name       string `json:"name,omitempty" faker:"name,unique"`
 	Password   string `json:"password" faker:"-"`
-	IsVerified bool   `json:"is_verified" faker:"-" gorm:"default:false"`
-	IsAdmin    bool   `json:"is_admin" faker:"-" gorm:"default:false"`
-	Balance    uint64 `json:"balance" faker:"-" gorm:"default:0"`
-	Photo      string `json:"photo" faker:"-" gorm:"default:''"`
+	IsVerified bool   `json:"is_verified,omitempty" faker:"-" gorm:"default:false"`
+	IsAdmin    bool   `json:"is_admin,omitempty" faker:"-" gorm:"default:false"`
+	Balance    uint64 `json:"balance,omitempty" faker:"-" gorm:"default:0"`
+	Photo      string `json:"photo,omitempty" faker:"-" gorm:"default:''"`
 }
 
 func (u *User) NoPass() {
