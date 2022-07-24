@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -25,6 +26,8 @@ func Login(c echo.Context) error {
 	if err = c.Bind(user); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
+	log.Println(user)
 
 	var dbUser models.User
 	dbUser, err = controllers.UserGetByUsername(user.Username)
@@ -58,6 +61,10 @@ func Login(c echo.Context) error {
 	cookie.Name = "access_token"
 	cookie.Value = tokenSigned
 	cookie.Expires = expiry
+	cookie.SameSite = http.SameSiteNoneMode
+	cookie.Path = "/"
+	cookie.HttpOnly = false
+	cookie.Secure = true
 	c.SetCookie(cookie)
 
 	return c.JSON(http.StatusOK, models.User{Username: dbUser.Username, Name: dbUser.Name, IsAdmin: dbUser.IsAdmin})

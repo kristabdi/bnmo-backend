@@ -56,7 +56,7 @@ func GetUsers(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	if len(users) == 0 {
-		return c.NoContent(http.StatusNoContent)
+		return c.NoContent(http.StatusNotFound)
 	}
 
 	return c.JSON(http.StatusOK, users)

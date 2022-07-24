@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/kristabdi/bnmo-backend/handlers"
 	middleware2 "github.com/kristabdi/bnmo-backend/middleware"
 	"github.com/kristabdi/bnmo-backend/utils"
@@ -17,11 +16,6 @@ import (
 func main() {
 	var err error
 
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatalln("Env load failed")
-	}
-
 	if err = utils.Db.InitDB(); err != nil {
 		log.Fatalln("DB Connection error")
 	}
@@ -32,8 +26,8 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderAuthorization},
+		AllowOrigins:     []string{"*"},
+		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		AllowCredentials: true,
 	}))
 
