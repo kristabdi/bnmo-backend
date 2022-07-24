@@ -15,3 +15,8 @@ func TransactionGetBatch(page int64, pageSize int64, id uint) ([]models.Transact
 
 	return transactions, nil
 }
+
+func TransactionInsertOne(data *models.Transaction) error {
+	result := utils.Db.Create(data)
+	return result.Error
+}

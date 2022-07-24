@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
+	"time"
 )
 
 type DbInstance struct {
@@ -26,6 +27,10 @@ func (Db *DbInstance) InitDB() error {
 	})
 
 	Db.Context = context.Background()
+
+	if err = Db.Client.Set(Db.Context, "IDR", 1.0, 20*time.Minute).Err(); err != nil {
+		return err
+	}
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_DBNAME"), os.Getenv("DB_PORT"))
 

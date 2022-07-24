@@ -93,7 +93,7 @@ func (Db *DbInstance) InitSeeding() error {
 			amount := (rand.Intn(500-100) + 100) * 1000
 			rand.Seed(time.Now().UnixNano())
 			newRequest := models.Request{
-				UserID:     int64(i),
+				UserID:     uint(i),
 				Amount:     uint64(amount),
 				IsAdd:      rand.Intn(2) == 1,
 				IsApproved: true,
@@ -122,8 +122,8 @@ func (Db *DbInstance) InitSeeding() error {
 		for i := 0; i < 20; i++ {
 			amount := (rand.Intn(100-20) + 20) * 1000
 			newTransaction := models.Transaction{
-				IdFrom:   int64(idAvailable[0]),
-				IdTo:     int64(idAvailable[1]),
+				IdFrom:   idAvailable[0],
+				IdTo:     idAvailable[1],
 				Amount:   uint64(amount),
 				UserFrom: models.User{},
 				UserTo:   models.User{},

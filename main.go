@@ -59,6 +59,7 @@ func main() {
 	customer.GET("/history/:historyType", handlers.GetHistory)
 	customer.POST("/withdraw", handlers.Withdraw)
 	customer.POST("/deposit", handlers.Deposit)
+	customer.POST("/transaction", handlers.Transaction)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")

@@ -25,26 +25,49 @@ type User struct {
 func (u *User) NoSensitive() {
 	u.ID = 0
 	u.Password = ""
-
 }
 
 type Transaction struct {
 	Default
-	IdFrom   int64  `json:"id_from"`
-	IdTo     int64  `json:"id_to"`
-	Amount   uint64 `json:"amount"`
-	UserFrom User   `json:"-" gorm:"foreignKey:IdFrom;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
-	UserTo   User   `json:"-" gorm:"foreignKey:IdTo;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	IdFrom       uint   `json:"-"`
+	IdTo         uint   `json:"-"`
+	Amount       uint64 `json:"amount"`
+	UsernameTo   string `json:"username_to" gorm:"-"`
+	CurrencyFrom string `json:"currency_from" gorm:"-"`
+	NameFrom     string `json:"name_from,omitempty" gorm:"-"`
+	NameTo       string `json:"name_to,omitempty" gorm:"-"`
+	UserFrom     User   `json:"-" gorm:"foreignKey:IdFrom;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	UserTo       User   `json:"-" gorm:"foreignKey:IdTo;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 type Request struct {
 	ID         uuid.UUID `json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4()"`
 	UserID     uint      `json:"id_user,omitempty"`
 	Amount     uint64    `json:"amount"`
-	Currency   string    `json:"currency"`
+	Currency   string    `json:"currency" gorm:"-"`
 	IsAdd      bool      `json:"is_add,omitempty"`
 	IsApproved bool      `json:"is_approved,omitempty" gorm:"default:false"`
 	CreatedAt  time.Time `json:"created_at,omitempty"`
 	UpdatedAt  time.Time `json:"updated_at,omitempty"`
 	User       User      `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+}
+
+type QueryType struct {
+	From   string  `json:"from"`
+	To     string  `json:"to"`
+	Amount float64 `json:"amount"`
+}
+
+type InfoType struct {
+	Timestamp time.Time `json:"timestamp"`
+	Rate      float64   `json:"rate"`
+}
+
+type Converter struct {
+	Success    bool      `json:"success"`
+	Query      QueryType `json:"query"`
+	Info       InfoType  `json:"info"`
+	Historical bool      `json:"historical,omitempty"`
+	Date       time.Time `json:"date"`
+	Result     time.Time `json:"result"`
 }
