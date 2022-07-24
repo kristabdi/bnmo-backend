@@ -6,6 +6,7 @@ import (
 
 	"github.com/kristabdi/bnmo-backend/controllers"
 	"github.com/kristabdi/bnmo-backend/middleware"
+	"github.com/kristabdi/bnmo-backend/models"
 	"github.com/labstack/echo/v4"
 )
 
@@ -55,4 +56,38 @@ func GetHistory(c echo.Context) error {
 	} else {
 		return cc.NoContent(http.StatusBadRequest)
 	}
+}
+
+func Withdraw(c echo.Context) error {
+	cc := c.(*middleware.CustomContext)
+
+	req := new(models.Request)
+	if err := c.Bind(req); err != nil {
+		return cc.NoContent(http.StatusBadRequest)
+	}
+
+	req.UserID = cc.ID
+	req.IsAdd = false
+
+	if err := controllers.RequestInsertOne(req); err != nil {
+		return cc.NoContent(http.StatusInternalServerError)
+	}
+	return cc.NoContent(http.StatusOK)
+}
+
+func Deposit(c echo.Context) error {
+	cc := c.(*middleware.CustomContext)
+
+	req := new(models.Request)
+	if err := c.Bind(req); err != nil {
+		return cc.NoContent(http.StatusBadRequest)
+	}
+
+	req.UserID = cc.ID
+	req.IsAdd = true
+
+	if err := controllers.RequestInsertOne(req); err != nil {
+		return cc.NoContent(http.StatusInternalServerError)
+	}
+	return cc.NoContent(http.StatusOK)
 }

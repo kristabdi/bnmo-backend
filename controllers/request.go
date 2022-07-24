@@ -15,3 +15,8 @@ func RequestGetBatch(page int64, pageSize int64, id uint) ([]models.Request, err
 
 	return requests, nil
 }
+
+func RequestInsertOne(data *models.Request) error {
+	result := utils.Db.Create(data)
+	return result.Error
+}
