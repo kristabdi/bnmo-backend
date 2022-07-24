@@ -203,8 +203,11 @@ func Transaction(c echo.Context) error {
 		}
 	}
 
+	var destination models.User
+	destination, err = controllers.UserGetByUsername(transaction.UsernameTo)
+
 	transaction.IdFrom = cc.ID
-	transaction.IdTo, err = controllers.IDGetByUsername(transaction.UsernameTo)
+	transaction.IdTo = destination.ID
 	if err != nil {
 		return cc.String(http.StatusNotFound, "Destination Not Found")
 	}
@@ -216,5 +219,14 @@ func Transaction(c echo.Context) error {
 	if err = controllers.TransactionInsertOne(transaction); err != nil {
 		return cc.NoContent(http.StatusInternalServerError)
 	}
+
+	if err = controllers.UserUpdateBalance(transaction.IdFrom, cc.Balance-transaction.Amount); err != nil {
+		return cc.NoContent(http.StatusInternalServerError)
+	}
+
+	if err = controllers.UserUpdateBalance(transaction.IdTo, destination.Balance+transaction.Amount); err != nil {
+		return cc.NoContent(http.StatusInternalServerError)
+	}
+
 	return cc.NoContent(http.StatusOK)
 }
