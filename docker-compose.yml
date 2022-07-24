@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  postgres:
+    image: "postgres:14-alpine"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./scripts/postgres:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bnmo
+    restart: always
+  backend:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - backend:/app
+    environment:
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_DBNAME: bnmo
+      DB_PORT: 5432
+    restart: always
+    entrypoint: ["/app/scripts/wait-for", "postgres:5432", "--","/app/server"]
+volumes:
+  postgres:
+  backend:
