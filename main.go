@@ -24,6 +24,11 @@ func main() {
 		log.Fatalln("DB Connection error")
 	}
 
+	err = utils.InitSeeding()
+	if err != nil {
+		log.Fatalln("Seeding error")
+	}
+
 	fmt.Println("Db Connected")
 
 	e := echo.New()
