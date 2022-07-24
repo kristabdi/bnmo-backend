@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"context"
 	"fmt"
+	"github.com/go-redis/redis/v9"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
@@ -9,16 +11,27 @@ import (
 
 type DbInstance struct {
 	*gorm.DB
+	*redis.Client
+	context.Context
 }
 
 var Db DbInstance
 
 func (Db *DbInstance) InitDB() error {
 	var err error
+	Db.Client = redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       0, // use default DB
+	})
+
+	Db.Context = context.Background()
+
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_DBNAME"), os.Getenv("DB_PORT"))
 
 	Db.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	return err
+
 }
 
 func Paginate(page, pageSize int) func(Db *gorm.DB) *gorm.DB {
