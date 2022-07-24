@@ -1,9 +1,15 @@
 package utils
 
-import "github.com/golang-jwt/jwt"
+import (
+	"github.com/golang-jwt/jwt"
+)
 
-type CustomClaims struct {
+type DataClaims struct {
 	Username string `json:"username"`
 	IsAdmin  bool   `json:"is_admin"`
+}
+
+type CustomClaims struct {
+	DataClaims
 	jwt.StandardClaims
 }

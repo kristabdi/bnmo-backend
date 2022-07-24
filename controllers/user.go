@@ -11,29 +11,29 @@ func UserInsertOne(data *models.User) error {
 }
 
 func UserGetByUsername(username string) (models.User, error) {
-	var user = models.User{Username: username}
+	user := models.User{Username: username}
 
-	result := utils.Db.First(&user)
+	result := utils.Db.Where("username = ?", username).First(&user)
 	return user, result.Error
 }
 
-func UserGetBatch(page, pageSize int) ([]models.User, error) {
+func UserGetAll() ([]models.User, error) {
 	var users []models.User
 
-	result := utils.Db.Scopes(utils.Paginate(page, pageSize)).Find(&users)
+	result := utils.Db.Find(&users)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
 	for i := 0; i < len(users); i++ {
-		users[i].NoPass()
+		users[i].NoSensitive()
 	}
 
 	return users, nil
 }
 
-func UserVerify(id uint) error {
-	result := utils.Db.Model(&models.User{}).Where("id = ?", id).Update("is_verified", true)
+func UserVerify(username string) error {
+	result := utils.Db.Model(&models.User{}).Where("username = ?", username).Update("is_verified", true)
 	return result.Error
 }
 

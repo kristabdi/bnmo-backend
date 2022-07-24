@@ -39,8 +39,10 @@ func Login(c echo.Context) error {
 	expiry := time.Now().Add(time.Hour * 24)
 
 	claims := utils.CustomClaims{
-		Username: dbUser.Username,
-		IsAdmin:  dbUser.IsAdmin,
+		DataClaims: utils.DataClaims{
+			Username: dbUser.Username,
+			IsAdmin:  dbUser.IsAdmin,
+		},
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiry.Unix(),
 		},
@@ -99,6 +101,11 @@ func Registration(c echo.Context) error {
 
 	if _, err = io.Copy(dst, src); err != nil {
 		return err
+	}
+
+	user.Photo = filepath.Base(base64.URLEncoding.EncodeToString([]byte(photo.Filename)))
+	if err := controllers.UserInsertOne(&user); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.NoContent(http.StatusCreated)
 }
