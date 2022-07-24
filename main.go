@@ -19,13 +19,11 @@ func main() {
 		log.Fatalln("Env load failed")
 	}
 
-	err = utils.InitDB()
-	if err != nil {
+	if err = utils.Db.InitDB(); err != nil {
 		log.Fatalln("DB Connection error")
 	}
 
-	err = utils.InitSeeding()
-	if err != nil {
+	if err = utils.Db.InitSeeding(); err != nil {
 		log.Fatalln("Seeding error")
 	}
 

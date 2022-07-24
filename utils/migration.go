@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func InitSeeding() error {
+func (Db *DbInstance) InitSeeding() error {
 	var err error
 	faker.SetGenerateUniqueValues(true)
 

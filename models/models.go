@@ -12,12 +12,18 @@ type Default struct {
 }
 
 type User struct {
-	Default  `faker:"-"`
-	Email    string `json:"email" faker:"email,unique" gorm:"unique"`
-	Name     string `json:"name" faker:"name,unique"`
-	Password string `json:"password" faker:"-"`
-	Balance  uint64 `json:"balance" faker:"-" gorm:"default:0"`
-	IsAdmin  bool   `json:"is_admin" faker:"-" gorm:"default:false"`
+	Default    `faker:"-"`
+	Email      string `json:"email" faker:"email,unique" gorm:"unique"`
+	Name       string `json:"name" faker:"name,unique"`
+	Password   string `json:"password" faker:"-"`
+	IsVerified bool   `json:"is_verified" faker:"-" gorm:"default:false"`
+	IsAdmin    bool   `json:"is_admin" faker:"-" gorm:"default:false"`
+	Balance    uint64 `json:"balance" faker:"-" gorm:"default:0"`
+	Photo      string `json:"photo" faker:"-" gorm:"default:''"`
+}
+
+func (u *User) NoPass() {
+	u.Password = ""
 }
 
 type Transaction struct {
