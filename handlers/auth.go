@@ -39,6 +39,10 @@ func Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 
+	if !dbUser.IsVerified {
+		return echo.NewHTTPError(http.StatusUnauthorized, "User is not verified")
+	}
+
 	expiry := time.Now().Add(time.Hour * 24)
 
 	claims := utils.CustomClaims{
