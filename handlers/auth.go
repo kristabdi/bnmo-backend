@@ -75,10 +75,14 @@ func Login(c echo.Context) error {
 }
 
 func Registration(c echo.Context) error {
-	var user models.User
-
+	user := new(models.User)
+	log.Println(c.FormValue("username"))
 	user.Username = c.FormValue("username")
+	log.Println(user.Username)
 	user.Name = c.FormValue("name")
+	log.Println(c.FormValue("name"))
+	log.Println(user.Name)
+	log.Println(c.FormValue("password"))
 
 	hashed, err := bcrypt.GenerateFromPassword([]byte(c.FormValue("password")), 14)
 	if err != nil {
@@ -86,7 +90,7 @@ func Registration(c echo.Context) error {
 	}
 
 	user.Password = string(hashed)
-
+	log.Println(user.Password)
 	photo, err := c.FormFile("photo")
 	src, err := photo.Open()
 	if err != nil {
@@ -115,7 +119,8 @@ func Registration(c echo.Context) error {
 	}
 
 	user.Photo = filepath.Base(base64.URLEncoding.EncodeToString([]byte(photo.Filename)))
-	if err := controllers.UserInsertOne(&user); err != nil {
+	log.Println(user.Photo)
+	if err := controllers.UserInsertOne(user); err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.NoContent(http.StatusCreated)

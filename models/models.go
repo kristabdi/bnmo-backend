@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Default struct {
@@ -45,8 +46,8 @@ type Request struct {
 	UserID     uint      `json:"id_user,omitempty"`
 	Amount     uint64    `json:"amount"`
 	Currency   string    `json:"currency" gorm:"-"`
-	IsAdd      bool      `json:"is_add,omitempty"`
-	IsApproved bool      `json:"is_approved,omitempty" gorm:"default:false"`
+	IsAdd      bool      `json:"is_add"`
+	IsApproved bool      `json:"is_approved" gorm:"default:false"`
 	CreatedAt  time.Time `json:"created_at,omitempty"`
 	UpdatedAt  time.Time `json:"updated_at,omitempty"`
 	User       User      `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
@@ -69,5 +70,5 @@ type Converter struct {
 	Info       InfoType  `json:"info"`
 	Historical bool      `json:"historical,omitempty"`
 	Date       time.Time `json:"date"`
-	Result     time.Time `json:"result"`
+	Result     float64   `json:"result"`
 }

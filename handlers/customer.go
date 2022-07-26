@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -78,11 +78,21 @@ func Withdraw(c echo.Context) error {
 	val, err := utils.Db.Client.Get(utils.Db.Context, req.Currency).Result()
 	if err != nil {
 		//	Exchange rate api
-		res, err2 := http.Get(fmt.Sprintf("https://api.exchangeratesapi.io/v1/latest?access_key=%s&from=%s&to=IDR&amount=%s", os.Getenv("API_KEY"), req.Currency, req.Amount))
+		url := fmt.Sprintf("https://api.apilayer.com/exchangerates_data/convert?to=IDR&from=%s&amount=%d", req.Currency, req.Amount)
+		client := &http.Client{}
+		request, err2 := http.NewRequest("GET", url, nil)
+		request.Header.Set("apikey", "EnIvvlHCDvaZ9O83l58PAptuiN9VMIoc")
+		if err2 != nil {
+			return cc.NoContent(http.StatusInternalServerError)
+		}
+		res, err2 := client.Do(request)
 		if err2 != nil {
 			return cc.NoContent(http.StatusInternalServerError)
 		}
 		resBody, err2 := ioutil.ReadAll(res.Body)
+		if err2 != nil {
+			return cc.NoContent(http.StatusInternalServerError)
+		}
 
 		var conversion models.Converter
 		err2 = json.Unmarshal(resBody, &conversion)
@@ -124,23 +134,34 @@ func Deposit(c echo.Context) error {
 	if err := c.Bind(req); err != nil {
 		return cc.NoContent(http.StatusBadRequest)
 	}
-
+	log.Println((req.Amount))
 	var rate float64
 
 	val, err := utils.Db.Client.Get(utils.Db.Context, req.Currency).Result()
 	if err != nil {
 		//	Exchange rate api
-		res, err2 := http.Get(fmt.Sprintf("https://api.exchangeratesapi.io/v1/latest?access_key=%s&from=%s&to=IDR&amount=%s", os.Getenv("API_KEY"), req.Currency, req.Amount))
+		url := fmt.Sprintf("https://api.apilayer.com/exchangerates_data/convert?to=IDR&from=%s&amount=%d", req.Currency, req.Amount)
+		client := &http.Client{}
+		request, err2 := http.NewRequest("GET", url, nil)
+		request.Header.Set("apikey", "EnIvvlHCDvaZ9O83l58PAptuiN9VMIoc")
+		if err2 != nil {
+			return cc.NoContent(http.StatusInternalServerError)
+		}
+		res, err2 := client.Do(request)
 		if err2 != nil {
 			return cc.NoContent(http.StatusInternalServerError)
 		}
 		resBody, err2 := ioutil.ReadAll(res.Body)
+		if err2 != nil {
+			return cc.NoContent(http.StatusInternalServerError)
+		}
 
 		var conversion models.Converter
 		err2 = json.Unmarshal(resBody, &conversion)
 		if err2 != nil {
 			return cc.JSON(http.StatusInternalServerError, err2)
 		}
+		log.Println(conversion)
 
 		if err2 = utils.Db.Client.Set(utils.Db.Context, req.Currency, conversion.Info.Rate, 20*time.Minute).Err(); err2 != nil {
 			return cc.JSON(http.StatusInternalServerError, err2)
@@ -154,7 +175,7 @@ func Deposit(c echo.Context) error {
 			return cc.JSON(http.StatusInternalServerError, err2)
 		}
 	}
-
+	log.Println(rate)
 	req.UserID = cc.ID
 	req.IsAdd = true
 	req.Amount = uint64(math.Floor(rate * float64(req.Amount)))
@@ -178,7 +199,14 @@ func Transaction(c echo.Context) error {
 	val, err := utils.Db.Client.Get(utils.Db.Context, transaction.CurrencyFrom).Result()
 	if err != nil {
 		//	Exchange rate api
-		res, err2 := http.Get(fmt.Sprintf("https://api.exchangeratesapi.io/v1/latest?access_key=%s&from=%s&to=IDR&amount=%s", os.Getenv("API_KEY"), transaction.CurrencyFrom, transaction.Amount))
+		url := fmt.Sprintf("https://api.apilayer.com/exchangerates_data/convert?to=IDR&from=%s&amount=%d", transaction.CurrencyFrom, transaction.Amount)
+		client := &http.Client{}
+		request, err2 := http.NewRequest("GET", url, nil)
+		request.Header.Set("apikey", "EnIvvlHCDvaZ9O83l58PAptuiN9VMIoc")
+		if err2 != nil {
+			return cc.NoContent(http.StatusInternalServerError)
+		}
+		res, err2 := client.Do(request)
 		if err2 != nil {
 			return cc.NoContent(http.StatusInternalServerError)
 		}
