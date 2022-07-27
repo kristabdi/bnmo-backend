@@ -17,8 +17,8 @@ type User struct {
 	Username   string `json:"username" faker:"username,unique" gorm:"unique"`
 	Name       string `json:"name,omitempty" faker:"name,unique"`
 	Password   string `json:"password,omitempty" faker:"-"`
-	IsVerified bool   `json:"is_verified,omitempty" faker:"-" gorm:"default:false"`
-	IsAdmin    bool   `json:"is_admin,omitempty" faker:"-" gorm:"default:false"`
+	IsVerified bool   `json:"is_verified" faker:"-" gorm:"default:false"`
+	IsAdmin    bool   `json:"is_admin" faker:"-" gorm:"default:false"`
 	Balance    uint64 `json:"balance,omitempty" faker:"-" gorm:"default:0"`
 	Photo      string `json:"photo,omitempty" faker:"-" gorm:"default:''"`
 }
@@ -53,22 +53,17 @@ type Request struct {
 	User       User      `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
-type QueryType struct {
-	From   string  `json:"from"`
-	To     string  `json:"to"`
-	Amount float64 `json:"amount"`
-}
-
-type InfoType struct {
-	Timestamp time.Time `json:"timestamp"`
-	Rate      float64   `json:"rate"`
-}
-
 type Converter struct {
-	Success    bool      `json:"success"`
-	Query      QueryType `json:"query"`
-	Info       InfoType  `json:"info"`
-	Historical bool      `json:"historical,omitempty"`
-	Date       time.Time `json:"date"`
-	Result     float64   `json:"result"`
+	Success bool `json:"success"`
+	Query   struct {
+		From   string `json:"from"`
+		To     string `json:"to"`
+		Amount uint64 `json:"amount"`
+	} `json:"query"`
+	Info struct {
+		Timestamp int64   `json:"timestamp"`
+		Rate      float64 `json:"rate"`
+	} `json:"info"`
+	Date   string  `json:"date"`
+	Result float64 `json:"result"`
 }
