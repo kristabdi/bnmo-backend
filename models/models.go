@@ -53,17 +53,21 @@ type Request struct {
 	User       User      `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
+type RateInfo struct {
+	Timestamp int64   `json:"timestamp"`
+	Rate      float64 `json:"rate"`
+}
+
+type QueryInfo struct {
+	From   string `json:"from"`
+	To     string `json:"to"`
+	Amount uint64 `json:"amount"`
+}
+
 type Converter struct {
-	Success bool `json:"success"`
-	Query   struct {
-		From   string `json:"from"`
-		To     string `json:"to"`
-		Amount uint64 `json:"amount"`
-	} `json:"query"`
-	Info struct {
-		Timestamp int64   `json:"timestamp"`
-		Rate      float64 `json:"rate"`
-	} `json:"info"`
-	Date   string  `json:"date"`
-	Result float64 `json:"result"`
+	Success bool      `json:"success"`
+	Query   QueryInfo `json:"query"`
+	Info    RateInfo  `json:"info"`
+	Date    string    `json:"date"`
+	Result  float64   `json:"result"`
 }
