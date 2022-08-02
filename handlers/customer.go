@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"math"
 	"net/http"
 	"os"
@@ -44,6 +45,7 @@ func GetHistory(c echo.Context) error {
 	if historyType == "request" {
 		requests, err := controllers.RequestGetBatch(page, page_size, cc.ID)
 		if err != nil {
+			log.Println(err)
 			return cc.NoContent(http.StatusInternalServerError)
 		}
 		if len(requests) == 0 {
@@ -53,6 +55,7 @@ func GetHistory(c echo.Context) error {
 	} else if historyType == "transaction" {
 		requests, err := controllers.TransactionGetBatch(page, page_size, cc.ID)
 		if err != nil {
+			log.Println(err)
 			return cc.NoContent(http.StatusInternalServerError)
 		}
 		if len(requests) == 0 {
@@ -235,6 +238,7 @@ func Transaction(c echo.Context) error {
 
 	transaction.IdFrom = cc.ID
 	transaction.IdTo = destination.ID
+	transaction.UsernameTo = destination.Username
 	if err != nil {
 		return cc.String(http.StatusNotFound, "Destination Not Found")
 	}
