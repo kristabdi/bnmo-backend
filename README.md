@@ -51,7 +51,7 @@ Endpoint : http://localhost:3001
 ## Design Pattern
 ```
 1. Singleton
-Database single object digunakan terus menerus sehingga cocok menggunakan design pattern singleton. Inisialisasi client database dilakukan pada awal, dan digunakan terus menerus.
+Single object databases are used continuously so they are suitable for using the singleton design pattern. Initialization of the client database is carried out at the beginning, and is used continuously.
 2. Composite
-Models database berbentuk komposit seperti misalnya RateInfo dan QueryInfo yang terdapat pada model Converter dan User yang terdapat pada beberapa model lain seperti Transaction dan Request.
+Database models are in the form of composites, such as RateInfo and QueryInfo which are found in the Converter and User models which are found in several other models such as Transaction and Request.
 ```
