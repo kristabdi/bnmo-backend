@@ -27,8 +27,6 @@ func Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	log.Println(user)
-
 	var dbUser models.User
 	dbUser, err = controllers.UserGetByUsername(user.Username)
 	if err != nil {
@@ -61,17 +59,19 @@ func Login(c echo.Context) error {
 		return err
 	}
 
-	cookie := new(http.Cookie)
-	cookie.Name = "access_token"
-	cookie.Value = tokenSigned
-	cookie.Expires = expiry
-	cookie.SameSite = http.SameSiteNoneMode
-	cookie.Path = "/"
-	cookie.HttpOnly = false
-	cookie.Secure = true
-	c.SetCookie(cookie)
+	response := struct {
+		Token    string `json:"access_token"`
+		Username string `json:"username"`
+		Name     string `json:"name"`
+		IsAdmin  bool   `json:"is_admin"`
+	}{
+		Token:    tokenSigned,
+		Username: dbUser.Username,
+		Name:     dbUser.Name,
+		IsAdmin:  dbUser.IsAdmin,
+	}
 
-	return c.JSON(http.StatusOK, models.User{Username: dbUser.Username, Name: dbUser.Name, IsAdmin: dbUser.IsAdmin})
+	return c.JSON(http.StatusOK, response)
 }
 
 func Registration(c echo.Context) error {
